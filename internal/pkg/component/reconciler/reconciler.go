@@ -28,6 +28,32 @@ import (
 	"github.com/oneinfra/oneinfra/internal/pkg/utils"
 )
 
+// PreReconcile pre-reconciles the component
+func PreReconcile(inquirer inquirer.ReconcilerInquirer) error {
+	klog.V(1).Infof("pre-reconciling component %q with role %q", inquirer.Component().Name, inquirer.Component().Role)
+	component := retrieveComponent(inquirer)
+	if component == nil {
+		return errors.Errorf("could not retrieve a specific component instance for component %q", inquirer.Component().Name)
+	}
+	inquirer.Component().Conditions.SetCondition(
+		componentapi.PreReconcileStarted,
+		conditions.ConditionTrue,
+	)
+	res := component.PreReconcile(inquirer)
+	if res == nil {
+		inquirer.Component().Conditions.SetCondition(
+			componentapi.PreReconcileSucceeded,
+			conditions.ConditionTrue,
+		)
+	} else {
+		inquirer.Component().Conditions.SetCondition(
+			componentapi.PreReconcileSucceeded,
+			conditions.ConditionFalse,
+		)
+	}
+	return res
+}
+
 // Reconcile reconciles the component
 func Reconcile(inquirer inquirer.ReconcilerInquirer) error {
 	klog.V(1).Infof("reconciling component %q with role %q", inquirer.Component().Name, inquirer.Component().Role)

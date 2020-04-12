@@ -45,6 +45,12 @@ const (
 )
 
 const (
+	// PreReconcileStarted represents a condition type signaling whether a
+	// pre-reconcile has been started
+	PreReconcileStarted conditions.ConditionType = "PreReconcileStarted"
+	// PreReconcileSucceeded represents a condition type signaling that a
+	// pre-reconcile has succeeded
+	PreReconcileSucceeded conditions.ConditionType = "PreReconcileSucceeded"
 	// ReconcileStarted represents a condition type signaling whether a
 	// reconcile has been started
 	ReconcileStarted conditions.ConditionType = "ReconcileStarted"
